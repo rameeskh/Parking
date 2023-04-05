@@ -61,7 +61,7 @@ class Spot(models.Model):
     ]
     spot_type = models.CharField(max_length=50, choices=spot_types, default='CAR')
     price_per_hour = models.DecimalField(max_digits=8, decimal_places=2)
-    parking_lot = models.ForeignKey(ParkingLot, on_delete=models.CASCADE)
+    parking_lot = models.ForeignKey(ParkingLot, on_delete=models.CASCADE, related_name='spot')
     occupied = models.BooleanField(default=True)
 
     def __str__(self):
