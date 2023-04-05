@@ -42,3 +42,27 @@ class User(AbstractBaseUser, PermissionsMixin):
     objects = UserManager()
 
     USERNAME_FIELD = 'email'
+
+
+class ParkingLot(models.Model):
+    """ParkingLot in the system."""
+    name = models.CharField(max_length=250)
+    address = models.CharField(max_length=250)
+
+    def __str__(self):
+        return self.name
+
+
+class Spot(models.Model):
+    """spot in the parkinglot"""
+    spot_types = [
+        ('BIKE', 'Bike'),
+        ('CAR','Car'),
+    ]
+    spot_type = models.CharField(max_length=50, choices=spot_types, default='CAR')
+    price_per_hour = models.DecimalField(max_digits=8, decimal_places=2)
+    parking_lot = models.ForeignKey(ParkingLot, on_delete=models.CASCADE)
+    occupied = models.BooleanField(default=True)
+
+    def __str__(self):
+        return self.pk
