@@ -2,11 +2,13 @@
 Database Models
 """
 from django.db import models
+from django.conf import settings
 from django.contrib.auth.models import (
     AbstractBaseUser,
     BaseUserManager,
     PermissionsMixin,
 )
+from django.core.exceptions import PermissionDenied
 
 
 class UserManager(BaseUserManager):
@@ -48,6 +50,10 @@ class ParkingLot(models.Model):
     """ParkingLot in the system."""
     name = models.CharField(max_length=250)
     address = models.CharField(max_length=250)
+    user = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.CASCADE
+    )
 
     def __str__(self):
         return self.name
@@ -62,7 +68,11 @@ class Spot(models.Model):
     spot_type = models.CharField(max_length=50, choices=spot_types, default='CAR')
     price_per_hour = models.DecimalField(max_digits=8, decimal_places=2)
     parking_lot = models.ForeignKey(ParkingLot, on_delete=models.CASCADE, related_name='spot')
-    occupied = models.BooleanField(default=True)
+    occupied = models.BooleanField(default=False)
+    user = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.CASCADE
+    )
 
     def __str__(self):
         return self.pk

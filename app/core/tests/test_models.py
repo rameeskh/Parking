@@ -3,6 +3,7 @@ Test for models
 """
 from django.test import TestCase
 from django.contrib.auth import get_user_model
+from core import models
 
 
 class ModelTests(TestCase):
@@ -46,3 +47,16 @@ class ModelTests(TestCase):
 
         self.assertTrue(user.is_superuser)
         self.assertTrue(user.is_staff)
+
+    def test_create_ParkingLot(self):
+        """Test creating a ParkingLot"""
+        user = get_user_model().objects.create_user(
+            'test@example.com',
+            'test123',
+        )
+        parking_lot = models.ParkingLot.objects.create(
+            user=user,
+            name='Test ParkingLot',
+            address='Test Place',
+        )
+        self.assertEqual(str(parking_lot), parking_lot.name)
