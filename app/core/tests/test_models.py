@@ -48,8 +48,8 @@ class ModelTests(TestCase):
         self.assertTrue(user.is_superuser)
         self.assertTrue(user.is_staff)
 
-    def test_create_ParkingLot(self):
-        """Test creating a ParkingLot"""
+    def test_create_parkinglot_by_normal_user(self):
+        """Test creating a ParkingLot by a user"""
         user = get_user_model().objects.create_user(
             'test@example.com',
             'test123',
@@ -59,4 +59,20 @@ class ModelTests(TestCase):
             name='Test ParkingLot',
             address='Test Place',
         )
+        
+        self.assertEqual(parking_lot, None)
+        # self.assertEqual(str(parking_lot), parking_lot.name)
+
+    def test_create_parkinglot_by_admin(self):
+        """Test creating a parkinglot by admin"""
+        user = get_user_model().objects.create_superuser(
+            'test@example.com',
+            'test123',
+        )
+        parking_lot = models.ParkingLot.objects.create(
+            user=user,
+            name='Test parkingLot',
+            address='Test place',
+        )
+
         self.assertEqual(str(parking_lot), parking_lot.name)
