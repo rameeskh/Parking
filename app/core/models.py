@@ -46,6 +46,18 @@ class User(AbstractBaseUser, PermissionsMixin):
     USERNAME_FIELD = 'email'
 
 
+class ParkingLotManager(models.Manager):
+    """Manager for parkinglot model"""
+    def create_parking_lot(self, name, address, user):
+        """create and return the parkinglot instance"""
+        if not user.is_superuser:
+            raise PermissionDenied(
+                "Only admin users can create ParkingLot objects."
+                )
+        parkinglot = self.create(name=name, address=address, user=user)
+        return parkinglot
+
+
 class ParkingLot(models.Model):
     """ParkingLot in the system."""
     name = models.CharField(max_length=250)
@@ -55,6 +67,8 @@ class ParkingLot(models.Model):
         on_delete=models.CASCADE
     )
 
+    objects = ParkingLotManager()
+
     def __str__(self):
         return self.name
 
@@ -63,7 +77,7 @@ class Spot(models.Model):
     """spot in the parkinglot"""
     spot_types = [
         ('BIKE', 'Bike'),
-        ('CAR','Car'),
+        ('CAR', 'Car'),
     ]
     spot_type = models.CharField(max_length=50, choices=spot_types, default='CAR')
     price_per_hour = models.DecimalField(max_digits=8, decimal_places=2)
