@@ -50,18 +50,17 @@ class ModelTests(TestCase):
 
     def test_create_parkinglot_by_normal_user(self):
         """Test creating a ParkingLot by a user"""
+        from django.core.exceptions import PermissionDenied
         user = get_user_model().objects.create_user(
             'test@example.com',
             'test123',
-        )
-        parking_lot = models.ParkingLot.objects.create(
-            user=user,
-            name='Test ParkingLot',
-            address='Test Place',
-        )
-        
-        self.assertEqual(parking_lot, None)
-        # self.assertEqual(str(parking_lot), parking_lot.name)
+            )
+        with self.assertRaises(PermissionDenied):
+            models.ParkingLot.objects.create_parking_lot(
+                user=user,
+                name='Test ParkingLot',
+                address='Test Place',
+            )
 
     def test_create_parkinglot_by_admin(self):
         """Test creating a parkinglot by admin"""
