@@ -78,6 +78,7 @@ class Spot(models.Model):
     spot_types = [
         ('BIKE', 'Bike'),
         ('CAR', 'Car'),
+        ('OTHERS', 'Others')
     ]
     spot_type = models.CharField(max_length=50, choices=spot_types, default='CAR')
     price_per_hour = models.DecimalField(max_digits=8, decimal_places=2)
