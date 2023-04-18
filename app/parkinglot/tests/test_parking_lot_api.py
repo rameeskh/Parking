@@ -102,3 +102,30 @@ class PrivateParkingApiTests(TestCase):
         for k, v in payload.items():
             self.assertEqual(getattr(parkinglot, k), v)
         self.assertEqual(parkinglot.user, self.user)
+
+    def test_full_update_parkinglot(self):
+        """Test for full update of parkinglot"""
+        parkinglot = create_parkinglot(user=self.user)
+        
+        payload = {
+            'name': "Updated name",
+            'address': 'Updated address'
+        }
+        url = detail_url(parkinglot.id)
+        res = self.client.put(url, payload)
+
+        self.assertEqual(res.status_code, status.HTTP_200_OK)
+        parkinglot.refresh_from_db()
+        for k, v in payload.items():
+            self.assertEqual(getattr(parkinglot, k), v)
+        self.assertEqual(parkinglot.user, self.user)
+
+    def test_delete_parkinglot(self):
+        """Test deletion of parkinglot api"""
+        parkinglot = create_parkinglot(user=self.user)
+
+        url = detail_url(parkinglot.id)
+        res = self.client.delete(url)
+
+        self.assertEqual(res.status_code, status.HTTP_204_NO_CONTENT)
+        self.assertFalse(ParkingLot.objects.filter(id=parkinglot.id).exists())
